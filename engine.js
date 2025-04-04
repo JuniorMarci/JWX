@@ -146,11 +146,14 @@ function updatePlayer() {
 
       platforms.forEach(c => { 
 	  
-	  console.log(enemy,c);	
-	  
+	  if(
+	  (enemy.y + enemy.height) == c.y &&
+	  enemy.x > c.x && enemy.x < c.x + c.width
+	  ) {enemy.grav=false;}	
+	   
 	  } )
-
-	enemy.y += gravity*2;
+	  
+	if(enemy.grav) {enemy.y += gravity*5;}
 	
 	} else {
         enemy.y = canvas.height - enemy.height; // Para ele não cair fora da tela
