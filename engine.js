@@ -6,9 +6,13 @@ const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 600;
 
+// Carregar imagem
+const backgroundImage = new Image();
+backgroundImage.src = './TESTE.png' //'./3.png';
+
 // Definir o tamanho do cenário
 const levelWidth = 3000;
-const levelHeight = 1000;
+const levelHeight = 3000;
 
 // Variáveis de jogo
 let cameraX = 0; // Posição da câmera no eixo X
@@ -31,6 +35,7 @@ const player = {
 
 // Definindo as plataformas no cenário maior
 const platforms = [
+	{ x:0, y: -500, width: levelWidth, height:levelHeight, cor:"papelDeParede"},
     { x: 1, y: canvas.height - 1, width: levelWidth, height: 2, cor:"black" }, // Chão
 	{ x: 300, y: canvas.height - 100, width: levelWidth, height: 100 , cor:"menuiniciar" }, // Menu
 	{ x: 0, y: canvas.height - 100, width: 300, height: 100 , cor:"botaoiniciar" },
@@ -39,6 +44,16 @@ const platforms = [
     { x: 399, y: canvas.height - 400, width: 200, height: 20, cor:'green' },  // Exemplo de plataforma no meio do cenário
     { x: 2500, y: canvas.height - 150, width: 200, height: 20, cor:'green' }   // Outra plataforma mais à direita
 ];
+
+const icones = [
+	{ x: 100, y: canvas.height - 550, width: 100, height: 100, img:'meuComputador.png' },
+	{ x: 100, y: canvas.height - 750, width: 100, height: 100, img:'meuComputador.png' },
+];
+
+icones.forEach ( icone =>
+icones.push(
+		{ x: icone.x, y: icone.y + icone.height, width: icone.width, height: 2, img:'base' }
+		))
 
 // Definindo inimigos
 const enemies = [
@@ -106,10 +121,67 @@ function drawPlatforms() {
 		
 	}
 	
+	if (platform.cor == 'papelDeParede') {
+		
+		ypcamLev = cameraY/levelHeight;
+		ypplatLev = platform.y/levelHeight;
+		ypcam = (ypplatLev - ypcamLev)*levelHeight;
+		xpcamLev = cameraX/levelWidth;
+		xpplatLev = platform.x/levelWidth;
+		xpcam = (xpplatLev - xpcamLev)*levelWidth;
+		
+		//const pat = ctx.createPattern(backgroundImage, "no-repeat");
+		ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // 100% de transparência
+		ctx.fill(); 
+		ctx.drawImage(backgroundImage, xpcam, ypcam, platform.width, platform.height);
+		
+	}
+	
 	else {ctx.fillStyle = platform.cor}
 	
     ctx.fillRect(platform.x - cameraX, platform.y - cameraY, platform.width, platform.height);
     });
+}
+
+
+// Função para desenhar as plataformas
+function drawIcones() {
+    icones.forEach(icone => { 
+	
+		if (icone.img != 'base') {
+		
+		const ni = new Image();
+		ni.src = './icones/'+icone.img;
+
+		ypcamLev = cameraY/levelHeight;
+		ypplatLev = icone.y/levelHeight;
+		ypcam = (ypplatLev - ypcamLev)*levelHeight;
+		xpcamLev = cameraX/levelWidth;
+		xpplatLev = icone.x/levelWidth;
+		xpcam = (xpplatLev - xpcamLev)*levelWidth;
+		
+		ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // 100% de transparência
+		ctx.fill(); 
+		ctx.drawImage(ni, xpcam, ypcam, icone.width, icone.height);
+	    
+		}
+		
+		
+		/*
+		else {
+			ctx.fillStyle = 'black';
+			ctx.fillRect(icone.x - cameraX, icone.y - cameraY, icone.width, icone.height);
+			console.log(icone);	
+		}
+		*/
+		
+		
+		}
+		
+		
+		
+		
+		);
 }
 
 // Função para desenhar os inimigos
@@ -181,7 +253,7 @@ function updateCamera() {
 
     // Limitar a câmera para não sair do cenário
     if (cameraX < 0) cameraX = 0; // Câmera não pode sair para a esquerda
-    if (cameraY < 0) cameraY = 0; // Câmera não pode sair para cima
+    if (cameraY > 0) cameraY = 0; // Câmera não pode sair para cima
     if (cameraX > levelWidth - canvas.width) cameraX = levelWidth - canvas.width; // Limite à direita
     if (cameraY > levelHeight - canvas.height) cameraY = levelHeight - canvas.height; // Limite para baixo
 }
@@ -189,6 +261,21 @@ function updateCamera() {
 // Função para verificar colisões com plataformas
 function checkCollisions() {
     platforms.forEach(platform => {
+        if (
+            player.x + player.width > platform.x &&
+            player.x < platform.x + platform.width &&
+            player.y + player.height <= platform.y &&
+            player.y + player.height + player.dy >= platform.y
+        ) {
+            player.y = platform.y - player.height;
+            player.dy = 0;
+            player.jumping = false;
+        }
+	
+	
+	});
+	
+	icones.forEach(platform => {
         if (
             player.x + player.width > platform.x &&
             player.x < platform.x + platform.width &&
@@ -358,10 +445,13 @@ function gameLoop() {
     updateCamera();
 
     // Desenhar elementos
-    drawPlatforms();
+	drawPlatforms();
+	drawIcones();
+	
     if(player.vivo) {drawPlayer();}
     drawEnemies();
 	drawBVida(player['life']);
+	console.log(player.y);
 
     // Repetir o loop
     requestAnimationFrame(gameLoop);
