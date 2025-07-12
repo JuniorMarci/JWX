@@ -1,66 +1,19 @@
-// Definindo o canvas e contexto
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+faseAtiva = fase01
 
-// Definir o tamanho do canvas
-canvas.width = 800;
-canvas.height = 600;
+let platforms = faseAtiva[0]
+let enemies = faseAtiva[1]
+let icones = faseAtiva[2]
+backgroundImage.src = faseAtiva[3]
 
-// Carregar imagem
-const backgroundImage = new Image();
-backgroundImage.src = './TESTE.png' //'./3.png';
-
-// Definir o tamanho do cenário
-const levelWidth = 3000;
-const levelHeight = 3000;
-
-// Variáveis de jogo
-let cameraX = 0; // Posição da câmera no eixo X
-let cameraY = 0; // Posição da câmera no eixo Y
-const gravity = 0.5; // Gravidade para o personagem
-
-// Definindo o personagem
-const player = {
-    x: 100, // Posição inicial no eixo X
-    y: 500, // Posição inicial no eixo Y
-    width: 50,
-    height: 50,
-    speed: 5,
-    dx: 0, // Velocidade horizontal
-    dy: 0, // Velocidade vertical
-    jumping: false,
-    life: 100, // Vida do jogador
-	vivo: true
-};
-
-// Definindo as plataformas no cenário maior
-const platforms = [
-	{ x:0, y: -500, width: levelWidth, height:levelHeight, cor:"papelDeParede"},
-    { x: 1, y: canvas.height - 1, width: levelWidth, height: 2, cor:"black" }, // Chão
-	{ x: 300, y: canvas.height - 100, width: levelWidth, height: 100 , cor:"menuiniciar" }, // Menu
-	{ x: 0, y: canvas.height - 100, width: 300, height: 100 , cor:"botaoiniciar" },
-    { x: 150, y: canvas.height - 200, width: 200, height: 20, cor:'green' },
-    { x: 100, y: canvas.height - 300, width: 200, height: 20, cor:'green' },
-    { x: 399, y: canvas.height - 400, width: 200, height: 20, cor:'green' },  // Exemplo de plataforma no meio do cenário
-    { x: 2500, y: canvas.height - 150, width: 200, height: 20, cor:'green' }   // Outra plataforma mais à direita
-];
-
-const icones = [
-	{ x: 100, y: canvas.height - 550, width: 100, height: 100, img:'meuComputador.png' },
-	{ x: 100, y: canvas.height - 750, width: 100, height: 100, img:'meuComputador.png' },
-];
-
-icones.forEach ( icone =>
-icones.push(
-		{ x: icone.x, y: icone.y + icone.height, width: icone.width, height: 2, img:'base' }
-		))
-
-// Definindo inimigos
-const enemies = [
-    { x: 600, y: canvas.height - 300, width: 50, height: 50, type: 'damage', grav:true },  // Inimigo que causa dano
-    { x: 1200, y: canvas.height - 300, width: 50, height: 50, type: 'kill', grav:true },   // Inimigo que morre ao ser saltado
-    { x: 170, y: canvas.height - 500, width: 50, height: 50, type: 'kill', grav:true }    // Inimigo que morre ao ser saltado
-];
+function atualizarFase(faseRef) {
+//console.log(faseRef);
+platforms = faseRef[0]
+enemies = faseRef[1]
+icones = faseRef[2]
+backgroundImage.src = faseRef[3]
+entrarPressed = false;
+faseA = faseAp
+}
 
 // Função para desenhar o personagem
 function drawPlayer() {
@@ -187,7 +140,9 @@ function drawIcones() {
 // Função para desenhar os inimigos
 function drawEnemies() {
     enemies.forEach(enemy => {
-        ctx.fillStyle = enemy.type === 'damage' ? '#CDC9DA' : 'pink';
+        if (enemy.type === 'damage') { ctx.fillStyle = '#CDC9DA'; }
+        if (enemy.type === 'kill') { ctx.fillStyle = 'pink'; }
+        if (enemy.type === 'barra') { ctx.fillStyle = 'black'; }
         ctx.fillRect(enemy.x - cameraX, enemy.y - cameraY, enemy.width, enemy.height);
     });
 }
@@ -275,6 +230,8 @@ function checkCollisions() {
 	
 	});
 	
+	let sel = false
+	
 	icones.forEach(platform => {
         if (
             player.x + player.width > platform.x &&
@@ -285,10 +242,15 @@ function checkCollisions() {
             player.y = platform.y - player.height;
             player.dy = 0;
             player.jumping = false;
+            faseAp = platform.aFase;
+            sel = true
         }
 	
 	
 	});
+	
+	if (!sel) {faseAp = faseA}
+	//console.log(sel,faseA,faseAp);
 }
 
 // Função para verificar colisões com inimigos
@@ -323,10 +285,12 @@ function checkEnemyCollisions() {
                 enemies.splice(index, 1); // Remove o inimigo da lista
                 //console.log('Inimigo morto!');
             }
-			
+            
+            			
 			
 			else {
 				
+				if (enemy.type != 'barra') {
 				player.life--; // Reduz a vida do jogador
                 //console.log('Vida do jogador:', player.life);
 				
@@ -334,7 +298,11 @@ function checkEnemyCollisions() {
 				if(player.x < enemy.x) { player.x = enemy.x - enemy.height; }
 				if(player.x > enemy.x) { player.x = enemy.x + enemy.height; }
 
-			}
+			}}
+			
+			
+			
+			if (enemy.type === 'barra') {player.y = player.y-(gravity*10);}
 			
 			
 			
@@ -403,12 +371,14 @@ function drawBVida(vida) {
 
 
 
-
+let faseAp = fase01
+let faseA = fase01
 
 // Variáveis para controle
 let rightPressed = false;
 let leftPressed = false;
 let upPressed = false;
+let entrarPressed = false;
 
 // Detectando teclas pressionadas
 document.addEventListener('keydown', (e) => {
@@ -418,11 +388,14 @@ document.addEventListener('keydown', (e) => {
         player.dy = -10; // Força para pular
         player.jumping = true;
     }
+    
+    if (e.key === 'Enter') entrarPressed = true;
 });
 
 document.addEventListener('keyup', (e) => {
     if (e.key === 'ArrowRight') rightPressed = false;
     if (e.key === 'ArrowLeft') leftPressed = false;
+    if (e.key === 'Enter') entrarPressed = false;
 });
 
 // Atualizar movimento do personagem
@@ -451,11 +424,13 @@ function gameLoop() {
     if(player.vivo) {drawPlayer();}
     drawEnemies();
 	drawBVida(player['life']);
-	console.log(player.y);
+
+	if (entrarPressed) {atualizarFase(window[faseAp])}
 
     // Repetir o loop
     requestAnimationFrame(gameLoop);
 }
+
 
 // Iniciar o jogo
 gameLoop();
