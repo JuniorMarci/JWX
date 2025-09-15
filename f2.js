@@ -14,9 +14,10 @@ const platforms02 = [
 
 const icones02 = [
 	{ x: 100, y: canvas.height - 350, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase01' },
-	{ x: 100, y: canvas.height - 550, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase02' },
-	{ x: 100, y: canvas.height - 750, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase03' },
-	{ x: 100, y: canvas.height - 1050, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase04' },
+	{ x: 100, y: canvas.height - 550, width: 100, height: 100, img:'meusdocumentos.png', aFase: 'fase02' },
+	{ x: 100, y: canvas.height - 750, width: 100, height: 100, img:'JabelaX.png', aFase: 'fase03' },
+	{ x: 100, y: canvas.height - 1050, width: 100, height: 100, img:'Jorx.png', aFase: 'fase04' },
+	{ x: 250, y: canvas.height - 1050, width: 100, height: 100, img:'JouwerXont.png', aFase: 'fase04' },
 ];
 
 icones02.forEach ( icone =>
@@ -28,7 +29,7 @@ icones02.push(
 const enemies02 = [
     { x: 400, y: canvas.height - 100, width: 50, height: 50, type: 'damage', grav:true },  // Inimigo que causa dano
     { x: 1000, y: canvas.height - 100, width: 50, height: 50, type: 'kill', grav:true },   // Inimigo que morre ao ser saltado
-    { x: 1, y: canvas.height - 300, width: 50, height: 500, type: 'barra', grav:true }    // Inimigo que morre ao ser saltado
+    { x: 1, y: canvas.height - 300, width: 25, height: 1000, type: 'barra', grav:true }    // Inimigo que morre ao ser saltado
 ];
 
 fase02 = [platforms02,enemies02,icones02,backgroundImage02]

@@ -142,8 +142,20 @@ function drawEnemies() {
     enemies.forEach(enemy => {
         if (enemy.type === 'damage') { ctx.fillStyle = '#CDC9DA'; }
         if (enemy.type === 'kill') { ctx.fillStyle = 'pink'; }
-        if (enemy.type === 'barra') { ctx.fillStyle = 'black'; }
-        ctx.fillRect(enemy.x - cameraX, enemy.y - cameraY, enemy.width, enemy.height);
+        if (enemy.type === 'barra') {
+			
+			ctx.fillStyle = '#C4D6FC'; ctx.strokeStyle = "#F5F4EF"; ctx.lineWidth = 5;
+			ctx.strokeRect(enemy.x - cameraX, enemy.y - cameraY, enemy.width, enemy.height);
+			
+			}
+        //ctx.fillRect(enemy.x - cameraX, enemy.y - cameraY, enemy.width, enemy.height);
+		
+		ctx.beginPath();
+		ctx.roundRect(enemy.x - cameraX, enemy.y - cameraY, enemy.width, enemy.height, 10);
+		ctx.fill();
+		
+
+		
     });
 }
 
@@ -302,7 +314,7 @@ function checkEnemyCollisions() {
 			
 			
 			
-			if (enemy.type === 'barra') {player.y = player.y-(gravity*10);}
+			if (enemy.type === 'barra') {player.dy -= gravity;}
 			
 			
 			

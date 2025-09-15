@@ -14,9 +14,10 @@ const platforms01 = [
 
 const icones01 = [
 	{ x: 100, y: canvas.height - 550, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase01' },
-	{ x: 100, y: canvas.height - 750, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase02' },
-	{ x: 100, y: canvas.height - 950, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase03' },
-	{ x: 100, y: canvas.height - 1150, width: 100, height: 100, img:'meuComputador.png', aFase: 'fase04' },
+	{ x: 100, y: canvas.height - 750, width: 100, height: 100, img:'meusdocumentos.png', aFase: 'fase02' },
+	{ x: 100, y: canvas.height - 950, width: 100, height: 100, img:'JabelaX.png', aFase: 'fase03' },
+	{ x: 100, y: canvas.height - 1150, width: 100, height: 100, img:'Jorx.png', aFase: 'fase04' },
+	{ x: 250, y: canvas.height - 1150, width: 100, height: 100, img:'JouwerXont.png', aFase: 'fase04' },
 ];
 
 icones01.forEach ( icone =>
