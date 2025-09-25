@@ -1,4 +1,4 @@
-faseAtiva = fase01
+faseAtiva = fase02
 
 let platforms = faseAtiva[0]
 let enemies = faseAtiva[1]
